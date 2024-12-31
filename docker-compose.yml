@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: 'starbound-server'
+    container_name: starbound-server
     environment:
       - STEAM_USER=YOUR_USERNAME
       - WORKSHOP_COLLECTION_IDS=SPACE_SEPARATED_COLLECTION_IDS
