@@ -10,7 +10,7 @@ update_starbound() {
 }
 
 # Check if Starbound is already installed
-if [ ! -d "$INSTALL_DIR" ]; then
+if [ ! -d "$STARBOUND_INSTALL_DIR" ]; then
   echo "Starbound not found in $STARBOUND_INSTALL_DIR. Downloading..."
   mkdir -p "$STARBOUND_INSTALL_DIR"
   update_starbound
