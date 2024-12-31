@@ -7,4 +7,5 @@ if [ $exit_code -eq 0 ]; then
   echo "Login successful."
 else
   echo "Login failed. Please run the container with the \"login\" command to login."
+  exit 1
 fi
