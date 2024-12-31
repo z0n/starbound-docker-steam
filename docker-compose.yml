@@ -4,6 +4,10 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: 'starbound-server'
+    environment:
+      - STEAM_USER=YOUR_USERNAME
+      - WORKSHOP_COLLECTION_IDS=SPACE_SEPARATED_COLLECTION_IDS
+      - WORKSHOP_ITEM_IDS=SPACE_SEPARATED_ITEM_IDS
     ports:
       - "21025:21025"
       - "21025:21025/udp"
@@ -12,5 +16,9 @@ services:
     volumes:
       # The game data
       - ./starbound:/home/starbound/starbound
-      # The steam data including the workshop files
+      # The steamcmd data including workshop downloads
       - ./steamcmd:/home/starbound/.steam
+      # The steam data (including cached login credentials)
+      - ./steam:/home/starbound/Steam
+    # remove the next line after logging in successfully
+    command: ["login"]
