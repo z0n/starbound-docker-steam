@@ -14,8 +14,6 @@ services:
     volumes:
       # The game data
       - ./starbound:/home/starbound/starbound
-      # The steamcmd data including workshop downloads
-      - ./steamcmd:/home/starbound/.steam
       # The steam data (including cached login credentials)
       - ./steam:/home/starbound/Steam
     # remove the next line after logging in successfully
