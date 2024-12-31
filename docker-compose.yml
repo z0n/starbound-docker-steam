@@ -1,8 +1,6 @@
 services:
   starbound-server:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: docker.io/novac/starbound-docker-steam:latest
     container_name: starbound-server
     environment:
       - STEAM_USER=YOUR_USERNAME
