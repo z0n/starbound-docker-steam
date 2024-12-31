@@ -7,6 +7,12 @@ ENV STARBOUND_INSTALL_DIR=$HOME/starbound
 ENV STARBOUND_MODS_DIR=$STARBOUND_INSTALL_DIR/mods
 ENV STARBOUND_APP_ID=211820
 
+# Install dependencies
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt update -y \
+  && apt install -y --no-install-recommends curl dos2unix \
+  && rm -rf /var/lib/apt/lists/*
+
 # Add starbound user
 RUN useradd --create-home --home $HOME starbound
 
