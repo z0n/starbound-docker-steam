@@ -2,7 +2,7 @@
 
 # Function to update or download Starbound server
 update_starbound() {
-  steamcmd +force_install_dir "$STARBOUND_INSTALL_DIR" +app_update "$STARBOUND_APP_ID" validate +quit
+  steamcmd +login $STEAM_USER +force_install_dir "$STARBOUND_INSTALL_DIR" +app_update "$STARBOUND_APP_ID" validate +quit
   if [ $? -ne 0 ]; then
     echo "Failed to update or download Starbound server."
     exit 1

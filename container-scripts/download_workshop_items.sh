@@ -8,7 +8,7 @@ download_workshop_item() {
   modname_clean=$(echo "$modname" | dos2unix)
   counter=1
   printf "Downloading %s - %s \n" "$workshop_item" "$modname_clean"
-  until steamcmd +workshop_download_item "$STARBOUND_APP_ID" "$workshop_item" validate +quit; do
+  until steamcmd +login $STEAM_USER +workshop_download_item "$STARBOUND_APP_ID" "$workshop_item" validate +quit; do
     printf "Error Downloading %s - %s. Will try again \n" "$workshop_item" "$modname_clean"
     counter++
     if ((counter > 4)); then
