@@ -1,4 +1,4 @@
-FROM steamcmd/steamcmd:ubuntu-24
+FROM docker.io/steamcmd/steamcmd:ubuntu-24
 
 # Environment variables
 ENV USER=starbound
