@@ -1,0 +1,16 @@
+services:
+  starbound-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: 'starbound-server'
+    ports:
+      - "21025:21025"
+      - "21025:21025/udp"
+      # optional (rcon)
+      # - "21026:21026"
+    volumes:
+      # The game data
+      - ./starbound:/home/starbound/starbound
+      # The steam data including the workshop files
+      - ./steamcmd:/home/starbound/.steam
