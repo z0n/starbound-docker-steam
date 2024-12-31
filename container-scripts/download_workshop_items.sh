@@ -10,7 +10,7 @@ download_workshop_item() {
   printf "Downloading %s - %s \n" "$workshop_item" "$modname_clean"
   until steamcmd +login $STEAM_USER +workshop_download_item "$STARBOUND_APP_ID" "$workshop_item" validate +quit; do
     printf "Error Downloading %s - %s. Will try again \n" "$workshop_item" "$modname_clean"
-    counter++
+    ((counter++))
     if ((counter > 4)); then
       printf "Failed to download %s - %s \n" "$workshop_item" "$modname_clean"
       exit 1
