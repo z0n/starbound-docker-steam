@@ -1,24 +1,14 @@
 #!/usr/bin/env bash
 
 declare -A downloaded_mods
+steamcmd_command="steamcmd +login $STEAM_USER"
 
 download_workshop_item() {
   local workshop_item=$1
   modname="$(curl -s https://steamcommunity.com/sharedfiles/filedetails/?id="$workshop_item" | grep "<title>" | sed -e 's/<[^>]*>//g' | cut -d ' ' -f 4-)"
   modname_clean=$(echo "$modname" | dos2unix)
-  counter=1
-  printf "Downloading %s - %s \n" "$workshop_item" "$modname_clean"
-  until steamcmd +login $STEAM_USER +workshop_download_item "$STARBOUND_APP_ID" "$workshop_item" validate +quit; do
-    printf "Error Downloading %s - %s. Will try again \n" "$workshop_item" "$modname_clean"
-    ((counter++))
-    if ((counter > 4)); then
-      printf "Failed to download %s - %s \n" "$workshop_item" "$modname_clean"
-      exit 1
-    fi
-  done
-  if [ ! -L "$STARBOUND_MODS_DIR/$workshop_item" ]; then
-    ln -s "$HOME/.steam/steamapps/workshop/content/$STARBOUND_APP_ID/$workshop_item/" "$STARBOUND_MODS_DIR/$workshop_item"
-  fi
+  printf "Preparing to download %s - %s \n" "$workshop_item" "$modname_clean"
+  steamcmd_command+=" +workshop_download_item $STARBOUND_APP_ID $workshop_item"
   downloaded_mods[$workshop_item]=1
 }
 
@@ -40,3 +30,15 @@ if [ -n "$WORKSHOP_ITEM_IDS" ]; then
     fi
   done
 fi
+
+# Execute the steamcmd command to download all items at once
+steamcmd_command+=" +quit"
+echo "Downloading workshop items..."
+eval $steamcmd_command
+
+# Create symbolic links for downloaded mods
+for workshop_item in "${!downloaded_mods[@]}"; do
+  if [ ! -L "$STARBOUND_MODS_DIR/$workshop_item" ]; then
+    ln -s "$HOME/.steam/steamapps/workshop/content/$STARBOUND_APP_ID/$workshop_item/" "$STARBOUND_MODS_DIR/$workshop_item"
+  fi
+done
