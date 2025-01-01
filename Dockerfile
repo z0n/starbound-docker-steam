@@ -10,7 +10,7 @@ ENV STARBOUND_APP_ID=211820
 # Install dependencies
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt update -y \
-  && apt install -y --no-install-recommends curl dos2unix \
+  && apt install -y --no-install-recommends curl \
   && rm -rf /var/lib/apt/lists/*
 
 # Add starbound user

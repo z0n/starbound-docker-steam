@@ -3,22 +3,9 @@
 declare -A downloaded_mods
 steamcmd_command="steamcmd +login $STEAM_USER"
 
-# https://stackoverflow.com/a/3352015 🤯
-trim() {
-  local var="$*"
-  (($#)) || read -r var
-  # remove leading whitespace characters
-  var="${var#"${var%%[![:space:]]*}"}"
-  # remove trailing whitespace characters
-  var="${var%"${var##*[![:space:]]}"}"
-  printf '%s' "$var"
-}
-
 download_workshop_item() {
   local workshop_item=$1
-  modname="$(curl -s https://steamcommunity.com/sharedfiles/filedetails/?id="$workshop_item" | grep "<title>" | sed -e 's/<[^>]*>//g' | sed -e 's/Steam Workshop:://' | trim)"
-  modname_clean=$(echo "$modname" | dos2unix)
-  printf "Preparing to download %s - %s \n" "$workshop_item" "$modname_clean"
+  printf "Preparing to download %s \n" "$workshop_item"
   steamcmd_command+=" +workshop_download_item $STARBOUND_APP_ID $workshop_item"
   downloaded_mods[$workshop_item]=1
 }
