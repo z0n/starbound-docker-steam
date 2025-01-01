@@ -44,16 +44,17 @@ eval $steamcmd_command
 
 # Create symbolic links for downloaded mods
 for workshop_item in "${!downloaded_mods[@]}"; do
-  if [ ! -L "$STARBOUND_MODS_DIR/$workshop_item" ]; then
-    ln -s "$HOME/Steam/steamapps/workshop/content/$STARBOUND_APP_ID/$workshop_item/" "$STARBOUND_MODS_DIR/$workshop_item"
+  pak_file=$(find "$HOME/Steam/steamapps/workshop/content/$STARBOUND_APP_ID/$workshop_item/" -name "*.pak" -print -quit)
+  if [ -n "$pak_file" ] && [ ! -L "$STARBOUND_MODS_DIR/$workshop_item.pak" ]; then
+    ln -s "$pak_file" "$STARBOUND_MODS_DIR/$workshop_item.pak"
   fi
 done
 
 # Remove symlinks for items which are no longer in the downloaded mods
 if [ "$CLEANUP_ORPHANS" = "true" ]; then
-  for symlink in "$STARBOUND_MODS_DIR"/*; do
+  for symlink in "$STARBOUND_MODS_DIR"/*.pak; do
     if [ -L "$symlink" ]; then
-      workshop_item=$(basename "$symlink")
+      workshop_item=$(basename "$symlink" .pak)
       if [ -z "${downloaded_mods[$workshop_item]}" ]; then
         echo "Removing orphaned symlink for $workshop_item"
         rm "$symlink"
