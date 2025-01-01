@@ -1,0 +1,23 @@
+[Unit]
+Description=Starbound Server
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Restart=always
+
+[Container]
+Image=docker.io/novac/starbound-docker-steam:latest
+ContainerName=starbound-server
+AutoUpdate=registry
+Environment="STEAM_USER=YOUR_USERNAME"
+Environment="WORKSHOP_COLLECTION_IDS=SPACE_SEPARATED_COLLECTION_IDS"
+Environment="WORKSHOP_ITEM_IDS=SPACE_SEPARATED_ITEM_IDS"
+Environment="CLEANUP_ORPHANS=true"
+PublishPort=21025:21025
+PublishPort=21025:21025/udp
+Volume=./starbound:/home/starbound/starbound:Z
+Volume=./steam:/home/starbound/Steam:Z
+
+[Install]
+WantedBy=default.target
