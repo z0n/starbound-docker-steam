@@ -12,7 +12,7 @@ Everything can be configured using the docker-compose.yml file.
 | `WORKSHOP_ITEM_IDS`       | One or more Steam Workshop item IDs, separated by space                                                                                                                                                  |
 | `CLEANUP_ORPHANS`         | If set to `true`, this will remove symlinks to workshop items which are no longer used, e.g. because it was removed from a collection or the item ID is no longer provided in the environment variables. |
 
-### Running the container for the first time
+### First time setup
 
 #### Preparation
 Update the environment variables in the docker-compose.yml file. At least the `STEAM_USER` is required. Remove the others if you don't need them.  
@@ -26,7 +26,7 @@ In the directory with the docker-compose.yml file, run `docker compose run starb
 This will trigger the login flow where you can enter your credentials into SteamCMD.  
 You should now find some files in the folder of your steam volume. If not, check your folder permissions.
 
-#### Running the container
+### Running the container
 You should now be able to run the container in "normal" mode.  
 For docker, run `docker compose up -d starbound-server`.  
 For podman, you can run `podman compose up -d starbound-server` or use the included `starbound-server.container` quadlet file.  
