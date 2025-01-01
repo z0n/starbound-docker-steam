@@ -5,7 +5,7 @@ steamcmd_command="steamcmd +login $STEAM_USER"
 
 download_workshop_item() {
   local workshop_item=$1
-  modname="$(curl -s https://steamcommunity.com/sharedfiles/filedetails/?id="$workshop_item" | grep "<title>" | sed -e 's/<[^>]*>//g' | cut -d ' ' -f 4-)"
+  modname="$(curl -s https://steamcommunity.com/sharedfiles/filedetails/?id="$workshop_item" | grep "<title>" | sed -e 's/<[^>]*>//g' | sed -e 's/Steam Workshop:://' | xargs)"
   modname_clean=$(echo "$modname" | dos2unix)
   printf "Preparing to download %s - %s \n" "$workshop_item" "$modname_clean"
   steamcmd_command+=" +workshop_download_item $STARBOUND_APP_ID $workshop_item"
