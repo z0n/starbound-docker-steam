@@ -17,3 +17,4 @@ services:
       - ./starbound:/home/starbound/starbound
       # The steam data (including cached login credentials and workshop items)
       - ./steam:/home/starbound/Steam
+    restart: unless-stopped
