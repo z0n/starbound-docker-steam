@@ -12,19 +12,27 @@ download_workshop_item() {
 
 if [ -n "$WORKSHOP_COLLECTION_IDS" ]; then
   for collection_id in $WORKSHOP_COLLECTION_IDS; do
-    mapfile -t WORKSHOP_IDS < <(curl -s https://steamcommunity.com/sharedfiles/filedetails/?id="${collection_id}" | grep -oP 'id="sharedfile_\K\d+(?=" class="collectionItem")')
-    for workshop_item in "${WORKSHOP_IDS[@]}"; do
-      if [ -z "${downloaded_mods[$workshop_item]}" ]; then
-        download_workshop_item "$workshop_item"
-      fi
-    done
+    if [[ "$collection_id" =~ ^[0-9]+$ ]]; then
+      mapfile -t WORKSHOP_IDS < <(curl -s https://steamcommunity.com/sharedfiles/filedetails/?id="${collection_id}" | grep -oP 'id="sharedfile_\K\d+(?=" class="collectionItem")')
+      for workshop_item in "${WORKSHOP_IDS[@]}"; do
+        if [ -z "${downloaded_mods[$workshop_item]}" ]; then
+          download_workshop_item "$workshop_item"
+        fi
+      done
+    else
+      echo "Skipping invalid collection ID: $collection_id"
+    fi
   done
 fi
 
 if [ -n "$WORKSHOP_ITEM_IDS" ]; then
   for workshop_item in $WORKSHOP_ITEM_IDS; do
-    if [ -z "${downloaded_mods[$workshop_item]}" ]; then
-      download_workshop_item "$workshop_item"
+    if [[ "$workshop_item" =~ ^[0-9]+$ ]]; then
+      if [ -z "${downloaded_mods[$workshop_item]}" ]; then
+        download_workshop_item "$workshop_item"
+      fi
+    else
+      echo "Skipping invalid workshop item ID: $workshop_item"
     fi
   done
 fi
