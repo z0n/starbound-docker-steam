@@ -53,3 +53,16 @@ for workshop_item in "${!downloaded_mods[@]}"; do
     ln -s "$HOME/Steam/steamapps/workshop/content/$STARBOUND_APP_ID/$workshop_item/" "$STARBOUND_MODS_DIR/$workshop_item"
   fi
 done
+
+# Remove symlinks for items which are no longer in the downloaded mods
+if [ "$CLEANUP_ORPHANS" = "true" ]; then
+  for symlink in "$STARBOUND_MODS_DIR"/*; do
+    if [ -L "$symlink" ]; then
+      workshop_item=$(basename "$symlink")
+      if [ -z "${downloaded_mods[$workshop_item]}" ]; then
+        echo "Removing orphaned symlink for $workshop_item"
+        rm "$symlink"
+      fi
+    fi
+  done
+fi
