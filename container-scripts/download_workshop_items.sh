@@ -39,6 +39,6 @@ eval $steamcmd_command
 # Create symbolic links for downloaded mods
 for workshop_item in "${!downloaded_mods[@]}"; do
   if [ ! -L "$STARBOUND_MODS_DIR/$workshop_item" ]; then
-    ln -s "$HOME/.steam/steamapps/workshop/content/$STARBOUND_APP_ID/$workshop_item/" "$STARBOUND_MODS_DIR/$workshop_item"
+    ln -s "$HOME/Steam/steamapps/workshop/content/$STARBOUND_APP_ID/$workshop_item/" "$STARBOUND_MODS_DIR/$workshop_item"
   fi
 done
