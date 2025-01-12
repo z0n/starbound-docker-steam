@@ -1,6 +1,10 @@
 {
   "recommendations": [
+    "charliermarsh.ruff",
     "foxundermoon.shell-format",
-    "yzhang.markdown-all-in-one"
+    "github.vscode-github-actions",
+    "ms-azuretools.vscode-docker",
+    "ms-python.python",
+    "yzhang.markdown-all-in-one",
   ]
 }
