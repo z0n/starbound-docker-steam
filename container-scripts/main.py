@@ -12,7 +12,7 @@ log = logging.getLogger(__name__)
 
 def _get_env_var(var_name: str, fallback: str | None = None) -> str:
     var = os.getenv(var_name, fallback)
-    if not var:
+    if var is None:
         log.error(f"{var_name} environment variable is not set. Exiting...")
         sys.exit(1)
     return var

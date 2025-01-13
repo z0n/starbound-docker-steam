@@ -1,16 +1,24 @@
 import logging
 import os
-import subprocess
 import sys
 
 from check_update import starbound_needs_update
+from run_shell_command import run_shell_command
 
 log = logging.getLogger(__name__)
 
 
 def update_starbound(install_dir: str, steam_user: str, app_id: str):
-    already_installed = os.path.isdir(install_dir)
-    needs_update = starbound_needs_update(install_dir=install_dir, app_id=app_id)
+    already_installed = (
+        os.path.isdir(install_dir)
+        and os.listdir(install_dir)
+        and os.path.isfile(os.path.join(install_dir, "linux/starbound_server"))
+    )
+    needs_update = (
+        starbound_needs_update(install_dir=install_dir, app_id=app_id)
+        if already_installed
+        else True
+    )
     if not already_installed:
         log.info(f"Starbound not found in {install_dir}. Downloading...")
     elif needs_update:
@@ -31,7 +39,7 @@ def update_starbound(install_dir: str, steam_user: str, app_id: str):
         "+quit",
     ]
 
-    result = subprocess.run(steamcmd_command)
+    result = run_shell_command(steamcmd_command)
     if result.returncode != 0:
         if not already_installed:
             log.error("Failed to download Starbound server, exiting...")

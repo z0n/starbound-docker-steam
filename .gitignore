@@ -1,3 +1,5 @@
 .pdm-python
 .venv
 __pycache__
+steam
+starbound

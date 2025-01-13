@@ -22,7 +22,7 @@ The user in the container is using UID/GID 1001.
 #### Logging into Steam
 When running the container for the first time, you'll need to log into Steam. Your credentials will then be cached and used again later.
 
-In the directory with the docker-compose.yml file, run `docker compose run starbound-server login`. If you're using podman, you can run `podman compose run starbound-server login` instead. 
+In the directory with the docker-compose.yml file, run `docker compose run --rm starbound-server login`. If you're using podman, you can run `podman compose run -rm starbound-server login` instead. 
 This will trigger the login flow where you can enter your credentials into SteamCMD.  
 You should now find some files in the folder of your steam volume. If not, check your folder permissions.
 

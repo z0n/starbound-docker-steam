@@ -2,6 +2,8 @@ services:
   starbound-server:
     image: docker.io/novac/starbound-docker-steam:latest
     container_name: starbound-server
+    stdin_open: true
+    tty: true
     environment:
       - STEAM_USER=YOUR_USERNAME
       - WORKSHOP_COLLECTION_IDS=SPACE_SEPARATED_COLLECTION_IDS

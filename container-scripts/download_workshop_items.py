@@ -1,10 +1,10 @@
 import logging
 import os
 import re
-import subprocess
 
 import requests
 from check_update import workshop_mod_needs_update
+from run_shell_command import run_shell_command
 
 log = logging.getLogger(__name__)
 
@@ -21,11 +21,11 @@ def _download_workshop_items(
 ):
     steamcmd_cmd = ["steamcmd", "+login", steam_user]
     for id in workshop_ids:
-        if not workshop_mod_needs_update(id, f"workshop/{id}.pak"):
+        if not workshop_mod_needs_update(workshop_mod_id=id, app_id=starbound_app_id):
             continue
         steamcmd_cmd += ["+workshop_download_item", starbound_app_id, id]
     steamcmd_cmd.append("+quit")
-    subprocess.run(steamcmd_cmd, check=True)
+    run_shell_command(steamcmd_cmd)
 
 
 def _create_symlinks(

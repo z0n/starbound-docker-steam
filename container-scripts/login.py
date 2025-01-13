@@ -1,12 +1,13 @@
 import logging
-import subprocess
 import sys
+
+from run_shell_command import run_shell_command
 
 log = logging.getLogger(__name__)
 
 
 def login(steam_user: str) -> None:
-    command = [
+    steamcmd_command = [
         "steamcmd",
         "+set_var",
         "@NoPromptForPassword",
@@ -19,8 +20,7 @@ def login(steam_user: str) -> None:
         "+quit",
     ]
 
-    result = subprocess.run(command, capture_output=True, text=True)
-
+    result = run_shell_command(command=steamcmd_command, allowInput=True)
     if result.returncode != 0:
         log.error("Steam login failed, exiting...")
         sys.exit(1)
@@ -32,7 +32,7 @@ def login(steam_user: str) -> None:
 
 
 def check_login(steam_user: str) -> None:
-    command = [
+    steamcmd_command = [
         "steamcmd",
         "+set_var",
         "@NoPromptForPassword",
@@ -45,7 +45,7 @@ def check_login(steam_user: str) -> None:
         "+quit",
     ]
 
-    result = subprocess.run(command, capture_output=True, text=True)
+    result = run_shell_command(command=steamcmd_command)
 
     if result.returncode != 0:
         log.error("Steam login failed, run the container with the 'login' command.")
