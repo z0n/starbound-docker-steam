@@ -10,30 +10,43 @@ ENV STARBOUND_APP_ID=211820
 # Install dependencies
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt update -y \
-  && apt install -y --no-install-recommends curl \
+  && apt install -y --no-install-recommends curl python3-all python3-venv \
   && rm -rf /var/lib/apt/lists/*
 
 # Add starbound user
 RUN useradd --create-home --home $HOME starbound
 
-# Set working directory
-WORKDIR $HOME
-
-# Copy starbound update/download scripts
-COPY --chown=${USER}:${USER} ./container-scripts/*.sh ./
-RUN chmod +x ./*.sh
+# Copy scripts and python project files
+COPY --chown=${USER}:${USER} pyproject.toml pdm.lock $HOME
+COPY --chown=${USER}:${USER} container-scripts $HOME/container-scripts
 
 # Copy steam stuff to user folder
-RUN cp -r /root/.steam /home/starbound/.steam
-RUN chown -R starbound:starbound /home/starbound/.steam
+RUN cp -r /root/.steam $HOME/.steam
+RUN chown -R ${USER}:${USER} $HOME/.steam
 
 # Run as starbound user
 USER starbound
+
+# Go to home directory
+WORKDIR $HOME
+
+# Install pdm
+RUN curl -sSL https://pdm-project.org/install-pdm.py | python3 -
+ENV PATH="$HOME/.local/bin:$PATH"
+
+# disable pdm update check
+ENV PDM_CHECK_UPDATE=false
+
+# Setup python environment
+RUN pdm install --check --prod --no-editable
+ENV PATH="$HOME/.venv/bin:$PATH"
+
+# Set working directory to scripts folder
+WORKDIR $HOME/container-scripts
 
 # Ports used by the server
 EXPOSE 21025/tcp 21025/udp
 # Optional: RCON
 EXPOSE 21026/tcp
 
-
-ENTRYPOINT [ "./entrypoint.sh"]
+ENTRYPOINT [ "python3", "main.py" ]
