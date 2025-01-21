@@ -1,12 +1,13 @@
 import logging
 import sys
 
-from run_shell_command import run_shell_command
+from constants import STEAM_USER
+from utils.shell import run_command
 
 log = logging.getLogger(__name__)
 
 
-def login(steam_user: str) -> None:
+def login() -> None:
     steamcmd_command = [
         "steamcmd",
         "+set_var",
@@ -16,11 +17,11 @@ def login(steam_user: str) -> None:
         "@ShutdownOnFailedCommand",
         "0",
         "+login",
-        steam_user,
+        STEAM_USER,
         "+quit",
     ]
 
-    result = run_shell_command(command=steamcmd_command, allowInput=True)
+    result = run_command(command=steamcmd_command, allowInput=True)
     if result.returncode != 0:
         log.error("Steam login failed, exiting...")
         sys.exit(1)
@@ -31,7 +32,7 @@ def login(steam_user: str) -> None:
         sys.exit(0)
 
 
-def check_login(steam_user: str) -> None:
+def check_login() -> None:
     steamcmd_command = [
         "steamcmd",
         "+set_var",
@@ -41,11 +42,11 @@ def check_login(steam_user: str) -> None:
         "@ShutdownOnFailedCommand",
         "1",
         "+login",
-        steam_user,
+        STEAM_USER,
         "+quit",
     ]
 
-    result = run_shell_command(command=steamcmd_command)
+    result = run_command(command=steamcmd_command)
 
     if result.returncode != 0:
         log.error("Steam login failed, run the container with the 'login' command.")
