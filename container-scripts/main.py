@@ -1,68 +1,55 @@
 import logging
-import os
 import sys
 
-from download_workshop_items import download_workshop_items
-from login import check_login, login
-from start_server import start_server
-from update_starbound import update_starbound
+from constants import USE_OPEN_STARBOUND, WORKSHOP_COLLECTION_IDS, WORKSHOP_ITEM_IDS
+from utils.open_starbound import update_open_starbound
+from utils.starbound import start_server, switch_starbound_distribution
+from utils.steam.auth import check_login, login
+from utils.steam.update import ensure_starbound_packed_pak, update_starbound
+from utils.steam.workshop import download_workshop_items
 
 log = logging.getLogger(__name__)
 
 
-def _get_env_var(var_name: str, fallback: str | None = None) -> str:
-    var = os.getenv(var_name, fallback)
-    if var is None:
-        log.error(f"{var_name} environment variable is not set. Exiting...")
-        sys.exit(1)
-    return var
-
-
-def main(steam_user: str, should_login: bool = False) -> None:
+def main(should_login: bool = False) -> None:
     if should_login:
-        login(steam_user=steam_user)
+        login()
     else:
-        # Required environment variables
-        starbound_app_id = _get_env_var("STARBOUND_APP_ID")
-        starbound_install_dir = _get_env_var("STARBOUND_INSTALL_DIR")
-        starbound_mods_dir = _get_env_var("STARBOUND_MODS_DIR")
-
-        # Optional environment variables
-        cleanup = _get_env_var("CLEANUP", "false").lower() == "true"
-        workshop_collections = _get_env_var("WORKSHOP_COLLECTION_IDS", "").split()
-        workshop_items = _get_env_var("WORKSHOP_ITEM_IDS", "").split()
-
         # Check if the user is logged in
-        check_login(steam_user=steam_user)
+        check_login()
 
-        # Download or update Starbound server
-        update_starbound(
-            install_dir=starbound_install_dir,
-            steam_user=steam_user,
-            app_id=starbound_app_id,
-        )
+        if USE_OPEN_STARBOUND:
+            log.info("Using OpenStarbound server.")
+
+            # Switch to Open Starbound distribution
+            switch_starbound_distribution(target_distribution="open")
+            update_open_starbound()
+
+            # Download the packed.pak file from Steam
+            ensure_starbound_packed_pak()
+        else:
+            log.info("Using Steam Starbound server.")
+
+            # Switch to Steam Starbound distribution
+            switch_starbound_distribution(target_distribution="steam")
+
+            # Check if the user is logged in
+            check_login()
+
+            # Download or update Starbound server
+            update_starbound()
 
         # Download or update workshop items
-        download_workshop_items(
-            steam_user=steam_user,
-            starbound_app_id=starbound_app_id,
-            starbound_mods_dir=starbound_mods_dir,
-            workshop_collection_ids=workshop_collections,
-            workshop_item_ids=workshop_items,
-            cleanup=cleanup,
-        )
+        if WORKSHOP_COLLECTION_IDS or WORKSHOP_ITEM_IDS:
+            download_workshop_items()
 
         # Start the Starbound server
-        start_server(starbound_install_dir=starbound_install_dir)
+        start_server()
 
 
 if __name__ == "__main__":
-    steam_user = _get_env_var("STEAM_USER")
-    if not steam_user:
-        log.error("STEAM_USER environment variable is not set. Exiting...")
-        sys.exit(1)
     should_login = len(sys.argv) > 1 and sys.argv[1] == "login"
 
     logging.basicConfig(level=logging.INFO)
 
-    main(steam_user=steam_user, should_login=should_login)
+    main(should_login=should_login)

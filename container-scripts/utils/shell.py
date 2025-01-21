@@ -3,7 +3,7 @@ import sys
 from subprocess import CompletedProcess
 
 
-def run_shell_command(
+def run_command(
     command: str | list[str], allowInput: bool = False
 ) -> CompletedProcess[str]:
     return subprocess.run(
